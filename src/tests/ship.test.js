@@ -1,13 +1,9 @@
-/* global describe, beforeAll, test, expect */
+/* global describe, test, expect */
 
 import Ship from '../factories/ship';
 
 describe('ship interactions', () => {
-    let newShip;
-
-    beforeAll(() => {
-        newShip = Ship();
-    });
+    const newShip = Ship();
     
     test('ship acknowledges hit', () => {
         expect(newShip.hit()).toBe(1);
