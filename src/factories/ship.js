@@ -12,6 +12,6 @@ export default function Ship(){
         hasSunk = (numOfHits === length);
         return hasSunk;
     }
-
+    
     return { hit, isSunk };
 }
