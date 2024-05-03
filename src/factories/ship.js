@@ -1,7 +1,11 @@
-export default function Ship(){
-    const length = 1;
+export default function Ship(shipLength = 1){
+    const length = shipLength;
     let numOfHits = 0;
     let hasSunk = false;
+
+    function getLength(){
+        return length;
+    }
 
     function hit(){
         numOfHits += 1;
@@ -12,6 +16,6 @@ export default function Ship(){
         hasSunk = (numOfHits === length);
         return hasSunk;
     }
-    
-    return { hit, isSunk };
+
+    return { getLength, hit, isSunk };
 }
