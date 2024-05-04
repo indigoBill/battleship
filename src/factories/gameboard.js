@@ -1,5 +1,10 @@
 export default function Gameboard(){
     const board = [[],[],[],[],[],[],[],[],[],[]];
+    const missedShots = [];
+
+    function getMissedShots(){
+        return missedShots;
+    }
 
     function placeShip(obj, coordinates){
         //  HORIZONTAL PLACEMENT
@@ -31,8 +36,13 @@ export default function Gameboard(){
     }
 
     function receiveAttack(coordinates){
-        
+        const row = coordinates[0];
+        const column = coordinates[1];
+        const ship = board[row][column];
+
+        if(ship) ship.hit();
+        else missedShots.push(coordinates);
     }
 
-    return { placeShip };
+    return { getMissedShots, placeShip, receiveAttack };
 }
