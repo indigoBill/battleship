@@ -3,6 +3,10 @@ export default function Ship(shipLength = 1){
     let numOfHits = 0;
     let hasSunk = false;
 
+    function getHits(){
+        return numOfHits;
+    }
+
     function getLength(){
         return length;
     }
@@ -17,5 +21,5 @@ export default function Ship(shipLength = 1){
         return hasSunk;
     }
 
-    return { getLength, hit, isSunk };
+    return { getHits, getLength, hit, isSunk };
 }
