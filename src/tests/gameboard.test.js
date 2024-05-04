@@ -6,6 +6,7 @@ import Gameboard from '../factories/gameboard';
 
 describe('gameboard interactions', () => {
     const board = Gameboard();
+    const carrierShip = Ship(5);
     
     describe('place ships of different sizes at specific coordinates', () => {
         test('ship length is 1', () => {
@@ -13,7 +14,7 @@ describe('gameboard interactions', () => {
         });
 
         test('ship length is 5', () => {
-            expect(board.placeShip(Ship(5), [0,0])).toEqual([[0,0],[0,4]]);
+            expect(board.placeShip(carrierShip, [0,0])).toEqual([[0,0],[0,4]]);
         });
 
         test('ship length is 3 but it is placed too far off grid to fit length', () => {
@@ -21,8 +22,18 @@ describe('gameboard interactions', () => {
         });
     });
     
+    describe('determine whether attack was a hit or miss', () => {
+        test('attack hit ship', () => {
+            board.receiveAttack([0,3]);
+            expect(carrierShip.getHits()).toBe(1);
+        });
 
-    // test('determine whether attack was a hit or miss');
+        test('attack missed ship', () => {
+            board.receiveAttack([0,5]);
+            expect(board.getMissedShots()).toEqual(expect.arrayContaining([[0,5]]));
+        });
+
+    });
 
     // test('keep track of missed attacks');
 
