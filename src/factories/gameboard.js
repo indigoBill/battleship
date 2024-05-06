@@ -1,6 +1,8 @@
 export default function Gameboard(){
     const board = [[],[],[],[],[],[],[],[],[],[]];
     const missedShots = [];
+    const shipLocations = [];
+    let allShipsSunk = false;
 
     function getMissedShots(){
         return missedShots;
@@ -23,6 +25,7 @@ export default function Gameboard(){
                 for(let spacesToFill = column; spacesToFill <= endColumn; spacesToFill+=1){
                     board[row][spacesToFill] = obj;
                 }
+                shipLocations.push([[row, column],[row, endColumn]]);
 
                 return [[row, column],[row, endColumn]];
             }
@@ -31,6 +34,7 @@ export default function Gameboard(){
         }
 
         board[row][column] = obj;
+        shipLocations.push([row, column]);
 
         return [row, column];   
     }
@@ -44,5 +48,19 @@ export default function Gameboard(){
         else missedShots.push(coordinates);
     }
 
-    return { getMissedShots, placeShip, receiveAttack };
+    function checkStatusOfShips(){
+        const totalAmountOfShips = shipLocations.length;
+        let numOfShipsSunk = 0;
+
+        shipLocations.forEach((coordinate) => {
+            const ship = typeof coordinate[0] === 'number' ? board[coordinate[0]][coordinate[1]] : board[coordinate[0][0]][coordinate[0][1]];
+
+            if(ship.isSunk()) numOfShipsSunk += 1;
+            if(numOfShipsSunk === totalAmountOfShips) allShipsSunk = true;
+        });
+
+        return allShipsSunk;
+    }
+
+    return { getMissedShots, placeShip, receiveAttack, checkStatusOfShips };
 }
