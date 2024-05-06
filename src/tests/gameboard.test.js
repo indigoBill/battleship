@@ -10,7 +10,7 @@ describe('gameboard interactions', () => {
     
     describe('place ships of different sizes at specific coordinates', () => {
         test('ship length is 1', () => {
-            expect(board.placeShip(Ship(), [0,0])).toEqual([0,0]);
+            expect(board.placeShip(Ship(), [1,1])).toEqual([1,1]);
         });
 
         test('ship length is 5', () => {
@@ -35,7 +35,25 @@ describe('gameboard interactions', () => {
 
     });
 
-    // test('keep track of missed attacks');
+    test('keep track of missed attacks', () => {
+        board.receiveAttack([1,5]);
+        expect(board.getMissedShots()).toEqual(expect.arrayContaining([[1,5]]));
+    });
 
-    // test('report whether or not all ships have sunk');
+    describe('report whether or not all ships have sunk', () => {
+        test('not all ships have sunk', () => {
+            expect(board.checkStatusOfShips()).toBeFalsy();
+        });
+
+        test('all ships sunk', () => {
+            board.receiveAttack([1,1]);
+            board.receiveAttack([0,0]);
+            board.receiveAttack([0,1]);
+            board.receiveAttack([0,2]);
+            board.receiveAttack([0,4]);
+
+            expect(board.checkStatusOfShips()).toBeTruthy();
+        });
+    })
+    
 });
