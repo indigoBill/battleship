@@ -22,7 +22,7 @@ module.exports = {
     },
     plugins: [
         new HtmlWebpackPlugin({
-            title: 'BattleShip',
+            title: 'Battleship',
             inject: 'head',
             scriptLoading: 'defer',
         }),
