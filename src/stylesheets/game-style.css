@@ -1,0 +1,28 @@
+html {
+    box-sizing: border-box;
+}
+
+*, *:before, *:after {
+    box-sizing: inherit;
+}
+
+body {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+
+.board-container {
+    display: grid;
+    grid-template-columns: repeat(10, min-content);
+}
+
+.box {
+    width: 20px;
+    height: 20px;
+    border: 1px solid rgb(77, 76, 76);
+}
+
+.filled-box {
+    background-color: rgb(180, 178, 178);
+}
