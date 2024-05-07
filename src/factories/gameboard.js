@@ -4,6 +4,10 @@ export default function Gameboard(){
     const shipLocations = [];
     let allShipsSunk = false;
 
+    function getBoard(){
+        return board;
+    }
+
     function getMissedShots(){
         return missedShots;
     }
@@ -62,5 +66,5 @@ export default function Gameboard(){
         return allShipsSunk;
     }
 
-    return { getMissedShots, placeShip, receiveAttack, checkStatusOfShips };
+    return { getBoard, getMissedShots, placeShip, receiveAttack, checkStatusOfShips };
 }
