@@ -1,0 +1,39 @@
+import './stylesheets/game-style.css';
+
+export function generateUiBoard(board){
+    const uiBoard = document.createElement('div');
+
+    uiBoard.classList.add('board');
+
+    board.forEach((boardRow, index) => {
+        const uiRow = document.createElement('div');
+
+        uiRow.classList.add('row');
+        uiRow.setAttribute('row', index);
+
+        for(let boxNum = 0; boxNum < 10; boxNum+=1){
+            const uiBox = document.createElement('div');
+
+            uiBox.classList.add('box');
+            uiBox.setAttribute('box', boxNum);
+            uiRow.appendChild(uiBox);
+
+            if(board[index][boxNum]) uiBox.classList.add('filled-box');
+        }
+
+        uiBoard.appendChild(uiRow);
+    });
+
+    document.body.appendChild(uiBoard);
+
+    return uiBoard;
+}
+
+export function toggleBoardDisplay(uiBoard){
+    const shipBoxes = uiBoard.querySelectorAll('.filled-box');
+
+    shipBoxes.forEach((box) => {
+        box.classList.toggle('hide-ships');
+    });
+    
+}
