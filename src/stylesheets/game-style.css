@@ -17,11 +17,11 @@ body {
 }
 
 .row,
-.board-container {
+.board {
     display: grid;
 }
 
-.board-container {
+.board {
     grid-template-rows: repeat(10, min-content);
 }
 
@@ -35,6 +35,22 @@ body {
     border: 1px solid rgb(77, 76, 76);
 }
 
+.hit {
+    background-color: pink;
+}
+
+.active {
+    cursor: crosshair;
+}
+
+.not-active {
+    cursor: not-allowed;
+}
+
 .filled-box {
     background-color: rgb(180, 178, 178);
+}
+
+.hide-ships {
+    background-color: white;
 }
