@@ -35,5 +35,25 @@ export function toggleBoardDisplay(uiBoard){
     shipBoxes.forEach((box) => {
         box.classList.toggle('hide-ships');
     });
-    
+}
+
+export function updateBoxDisplay(domBox, shipExists){
+    domBox.classList.add('hit');
+
+    if(shipExists) domBox.classList.add('ship-hit');
+    else domBox.classList.add('ship-missed');
+}
+
+export function setActiveBoard(domBoard){
+    const gameBoards = document.querySelectorAll('.board');
+
+    gameBoards.forEach((board) => {
+        if(board === domBoard){
+            board.classList.add('active');
+            board.classList.remove('not-active');
+        }else{
+            board.classList.add('not-active');
+            board.classList.remove('active');
+        } 
+    });
 }
