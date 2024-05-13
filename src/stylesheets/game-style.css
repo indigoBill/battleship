@@ -35,10 +35,6 @@ body {
     border: 1px solid rgb(77, 76, 76);
 }
 
-.hit {
-    background-color: pink;
-}
-
 .active {
     cursor: crosshair;
 }
@@ -53,4 +49,12 @@ body {
 
 .hide-ships {
     background-color: white;
+}
+
+.ship-hit {
+    background-color: green;
+}
+
+.ship-missed {
+    background-color: red;
 }
