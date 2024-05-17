@@ -29,12 +29,22 @@ export function generateUiBoard(board){
     return uiBoard;
 }
 
-export function toggleBoardDisplay(uiBoard){
+export function toggleBoardState(uiBoard){
+    uiBoard.classList.toggle('disable-board');
+}
+
+function toggleBoxDisplay(uiBoard){
     const shipBoxes = uiBoard.querySelectorAll('.filled-box');
 
-    shipBoxes.forEach((box) => {
-        box.classList.toggle('hide-ships');
-    });
+    if(uiBoard.classList.contains('not-active')){
+        shipBoxes.forEach((box) => {
+            box.classList.add('filled-box');
+        });
+    }else{
+        shipBoxes.forEach((box) => {
+            box.classList.remove('filled-box');
+        });
+    }
 }
 
 export function updateBoxDisplay(domBox, shipExists){
@@ -47,7 +57,7 @@ export function updateBoxDisplay(domBox, shipExists){
 export function setActiveBoard(domBoard){
     const gameBoards = document.querySelectorAll('.board');
 
-    gameBoards.forEach((board) => {
+    gameBoards.forEach((board) => {        
         if(board === domBoard){
             board.classList.add('active');
             board.classList.remove('not-active');
@@ -55,5 +65,7 @@ export function setActiveBoard(domBoard){
             board.classList.add('not-active');
             board.classList.remove('active');
         } 
+
+        toggleBoxDisplay(board);
     });
 }
