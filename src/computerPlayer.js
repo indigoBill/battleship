@@ -1,8 +1,3 @@
-//  2 LENGTH (X1)
-//  3 LENGTH (X2)
-//  4 LENGTH (X1)
-//  5 LENGTH (X1)
-
 import { updateBoxDisplay } from './game-ui';
 
 const POSSIBLE_PLAYS = [[1,0],[-1,0],[0,1],[0,-1]];
@@ -41,8 +36,35 @@ function loadAllPossibleMoves(){
     });
 }
 
+function getDirection(){
+    switch(direction){
+        case 'LEFT':
+            row+=1;
+            break;
+        case 'RIGHT':
+            row-=1;
+            break;
+        case 'UP':
+            column+=1;
+            break;
+        default:
+            column-=1;
+            break;
+    }
+    const validCoor = validateCoordinates(row, column);
+
+    if(validCoor){
+        return [row, column];
+    }
+    
+    direction = null;
+    nextMoveLogical = false;
+
+    return getRandomMove();
+}
+
 function getLogicalMove(){
-    if(direction) return direction;
+    if(direction) return getDirection();
 
     if(successfulCoordinates.length === 2){
         const firstXCoor = successfulCoordinates[0][0];
@@ -62,7 +84,7 @@ function getLogicalMove(){
         nextPossibleMoves.length = 0;
         successfulCoordinates.length = 0;
 
-        return direction;
+        return getDirection();
     }
 
     if(nextPossibleMoves.length === 0) loadAllPossibleMoves();
@@ -76,35 +98,6 @@ function getLogicalMove(){
 
 export default function getComputerMove(uiBoard, board){
     const coordinates = (nextMoveLogical) ? getLogicalMove() : getRandomMove();
-
-    if(coordinates === direction){
-        switch(direction){
-            case 'LEFT':
-                row+=1;
-                break;
-            case 'RIGHT':
-                row-=1;
-                break;
-            case 'UP':
-                column+=1;
-                break;
-            default:
-                column-=1;
-                break;
-        }
-        
-        const validCoor = validateCoordinates(row, column);
-
-        if(validCoor){
-            //  ISSUE SINCE I SET COORDINATES TO A STRING I CANT GET ARRAY VALUES
-            [coordinates[0], coordinates[1]] = [row, column];
-        }else{            
-            const nextMove = getRandomMove();
-
-            [coordinates[0], coordinates[1]] = [nextMove[0], nextMove[1]];
-            nextMoveLogical = false;
-        }
-    }
 
     const uiRow = uiBoard.querySelector(`[row = "${coordinates[0]}"]`);
     const uiBox = uiRow.querySelector(`[box = "${coordinates[1]}"]`);
