@@ -17,8 +17,6 @@ export function generateUiBoard(board){
             uiBox.classList.add('box');
             uiBox.setAttribute('box', boxNum);
             uiRow.appendChild(uiBox);
-
-            if(board[index][boxNum]) uiBox.classList.add('filled-box');
         }
 
         uiBoard.appendChild(uiRow);
@@ -27,6 +25,27 @@ export function generateUiBoard(board){
     document.body.appendChild(uiBoard);
 
     return uiBoard;
+}
+
+export function updateUiBoard(uiBoard, board){
+    const boardArr = board.getBoard();
+
+    boardArr.forEach((boardRow, rowIndex) => {
+        boardRow.forEach((rowBox, boxIndex) => {
+            if(boardArr[rowIndex][boxIndex]){
+                const uiRow = uiBoard.querySelector(`[row = "${rowIndex}"]`);
+                const uiBox = uiRow.querySelector(`[box = "${boxIndex}"]`);
+
+                uiBox.classList.add('filled-box');
+            }
+        });
+    });
+}
+
+export function updateClassList(domObj, className, toBeRemoved){
+    if(toBeRemoved) domObj.classList.remove(className);
+    else domObj.classList.add(className);
+
 }
 
 export function toggleBoardState(uiBoard){
