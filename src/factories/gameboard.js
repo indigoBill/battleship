@@ -22,6 +22,8 @@ export default function Gameboard(){
 
         if(!(column < 10 && column > -1)) return false;
 
+        if(board[row][column]) return false;
+
         if(obj.getLength() > 1){
             const endColumn = column + (obj.getLength() - 1);
 
