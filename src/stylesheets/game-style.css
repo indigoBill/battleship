@@ -60,3 +60,7 @@ body {
 .ship-missed {
     background-color: red;
 }
+
+.highlight {
+    background-color: orange;
+}
