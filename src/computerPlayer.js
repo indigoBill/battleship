@@ -16,9 +16,14 @@ function getRandomMove(){
 }
 
 function validateCoordinates(xCoor, yCoor){
+    const uiBoard = document.querySelector('.board.not-active');
+
     if(xCoor > -1 && xCoor < 10){
         if(yCoor > -1 && yCoor < 10){
-            return [xCoor, yCoor];
+            const uiRow = uiBoard.querySelector(`[row = "${xCoor}"]`);
+            const uiBox = uiRow.querySelector(`[box = "${yCoor}"]`);
+
+            if(!uiBox.classList.contains('hit')) return [xCoor, yCoor];
         }
     }
 
@@ -39,18 +44,19 @@ function loadAllPossibleMoves(){
 function getDirection(){
     switch(direction){
         case 'LEFT':
-            row+=1;
-            break;
-        case 'RIGHT':
-            row-=1;
-            break;
-        case 'UP':
-            column+=1;
-            break;
-        default:
             column-=1;
             break;
+        case 'RIGHT':
+            column+=1;
+            break;
+        case 'UP':
+            row-=1;
+            break;
+        default:
+            row+=1;
+            break;
     }
+
     const validCoor = validateCoordinates(row, column);
 
     if(validCoor){
@@ -61,6 +67,12 @@ function getDirection(){
     nextMoveLogical = false;
 
     return getRandomMove();
+}
+
+function clearArray(array){
+    array.forEach((arr) => {
+        arr.splice(0, arr.length);
+    });
 }
 
 function getLogicalMove(){
@@ -75,21 +87,25 @@ function getLogicalMove(){
         const xDirection = firstXCoor - secondXCoor;
         const yDirection = firstYCoor - secondYCoor;
 
-        if(xDirection > 0 && !yDirection) direction = 'LEFT';
-        else if(xDirection < 0 && !yDirection) direction = 'RIGHT';
+        if(xDirection > 0 && !yDirection) direction = 'UP';
+        else if(xDirection < 0 && !yDirection) direction = 'DOWN';
 
-        if(yDirection > 0 && !xDirection) direction = 'UP';
-        else if(yDirection < 0 && !xDirection) direction = 'DOWN'
+        if(yDirection > 0 && !xDirection) direction = 'LEFT';
+        else if(yDirection < 0 && !xDirection) direction = 'RIGHT'
 
-        nextPossibleMoves.length = 0;
-        successfulCoordinates.length = 0;
+        clearArray([successfulCoordinates, nextPossibleMoves]);
 
         return getDirection();
     }
 
-    if(nextPossibleMoves.length === 0) loadAllPossibleMoves();
+    if(nextPossibleMoves.length === 0)  loadAllPossibleMoves();
         
     const coordinates = nextPossibleMoves.shift();
+    
+    if(!coordinates){
+        nextMoveLogical = false;
+        return getRandomMove();
+    }
 
     [row, column] = [coordinates[0], coordinates[1]];
 
@@ -113,6 +129,7 @@ export default function getComputerMove(uiBoard, board){
             updateBoxDisplay(uiBox, true);
         }else{
             if(direction){
+                clearArray([successfulCoordinates, nextPossibleMoves]);
                 nextMoveLogical = false;
                 direction = null;
             }
