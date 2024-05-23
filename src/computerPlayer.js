@@ -15,6 +15,18 @@ function getRandomMove(){
     return [row, column];
 }
 
+function getEmptyBoardPlacement(board, shipLength){
+    const coordinate = getRandomMove();
+    const shipHorizEnd = coordinate[1] + shipLength;
+
+    //  WILL NEED TO ADJUST FOR VERTICAL END WHEN ADDING ROTATE FUNCTIONALITY
+    if(board.getBoard()[coordinate[0]][coordinate[1]] || shipHorizEnd >= 10){
+        return getEmptyBoardPlacement(board);
+    }
+        
+    return coordinate;
+}
+
 function validateCoordinates(xCoor, yCoor){
     const uiBoard = document.querySelector('.board.not-active');
 
@@ -28,6 +40,16 @@ function validateCoordinates(xCoor, yCoor){
     }
 
     return false;
+}
+
+export function generateRandomShipPlacement(board, ships){
+    ships.forEach((ship) => {
+
+        const coordinates = getEmptyBoardPlacement(board, ship.getLength());
+        console.log(`ship: ${ship.getLength()} coor: ${coordinates}`);
+
+        board.placeShip(ship, coordinates);
+    });
 }
 
 function loadAllPossibleMoves(){
@@ -112,7 +134,7 @@ function getLogicalMove(){
     return [row, column];  
 }
 
-export default function getComputerMove(uiBoard, board){
+export function getComputerMove(uiBoard, board){
     const coordinates = (nextMoveLogical) ? getLogicalMove() : getRandomMove();
 
     const uiRow = uiBoard.querySelector(`[row = "${coordinates[0]}"]`);
