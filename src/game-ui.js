@@ -42,10 +42,17 @@ export function updateUiBoard(uiBoard, board){
     });
 }
 
+export function createRotateBtn(){
+    const rotateBtn = document.createElement('button');
+    rotateBtn.classList.add('rotate-btn');
+    rotateBtn.textContent = 'ROTATE';
+
+    document.body.appendChild(rotateBtn);
+}
+
 export function updateClassList(domObj, className, toBeRemoved){
     if(toBeRemoved) domObj.classList.remove(className);
     else domObj.classList.add(className);
-
 }
 
 export function toggleBoardState(uiBoard){
