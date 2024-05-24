@@ -1,4 +1,5 @@
 import { updateBoxDisplay } from './game-ui';
+import Ship from './factories/ship';
 
 const POSSIBLE_PLAYS = [[1,0],[-1,0],[0,1],[0,-1]];
 const nextPossibleMoves = [];
@@ -15,16 +16,33 @@ function getRandomMove(){
     return [row, column];
 }
 
+function checkForOverlappingPlacement(board, coordinate, endPositions){
+    if(board.getBoard()[coordinate[0]][endPositions[0]]){
+        return true;
+    }
+    return false;
+}
+
 function getEmptyBoardPlacement(board, shipLength){
     const coordinate = getRandomMove();
     const shipHorizEnd = coordinate[1] + shipLength;
 
     //  WILL NEED TO ADJUST FOR VERTICAL END WHEN ADDING ROTATE FUNCTIONALITY
-    if(board.getBoard()[coordinate[0]][coordinate[1]] || shipHorizEnd >= 10){
-        return getEmptyBoardPlacement(board);
+    const overlappingPlacement = checkForOverlappingPlacement(board, coordinate, [shipHorizEnd, /* shipVertEnd */])
+    //  WILL NEED TO ADJUST FOR VERTICAL END WHEN ADDING ROTATE FUNCTIONALITY
+    if(board.getBoard()[coordinate[0]][coordinate[1]] || shipHorizEnd >= 10 || overlappingPlacement){
+        return getEmptyBoardPlacement(board, shipLength);
     }
-        
+
     return coordinate;
+}
+
+export function generateRandomShipPlacement(board, ships){
+    ships.forEach((ship) => {
+        const coordinates = getEmptyBoardPlacement(board, ship.getLength());
+
+        board.placeShip(Ship(ship.getLength()), coordinates);
+    });
 }
 
 function validateCoordinates(xCoor, yCoor){
@@ -40,16 +58,6 @@ function validateCoordinates(xCoor, yCoor){
     }
 
     return false;
-}
-
-export function generateRandomShipPlacement(board, ships){
-    ships.forEach((ship) => {
-
-        const coordinates = getEmptyBoardPlacement(board, ship.getLength());
-        console.log(`ship: ${ship.getLength()} coor: ${coordinates}`);
-
-        board.placeShip(ship, coordinates);
-    });
 }
 
 function loadAllPossibleMoves(){
