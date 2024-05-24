@@ -1,6 +1,7 @@
-import setUpGame from './logic/game-logic';
-
+import chooseOpponent from './game-logic';
 
 document.addEventListener('DOMContentLoaded', () => {
-    setUpGame();
+    chooseOpponent();
+    // placeShips();
+    // startGame();
 });
