@@ -95,3 +95,31 @@ export function setActiveBoard(domBoard){
         toggleBoxDisplay(board);
     });
 }
+
+export function createSelectOpponentModal(){
+    const selectOpponentModal = document.createElement('div');
+    const modalText = document.createElement('p');
+    const computerBtn = document.createElement('button');
+    const playerBtn = document.createElement('button');
+    
+    selectOpponentModal.classList.add('select-opponent');
+    modalText.classList.add('modal-text');
+    computerBtn.classList.add('comp-btn', 'opponent-btn');
+    playerBtn.classList.add('player-btn', 'opponent-btn');
+
+    modalText.textContent = 'SELECT OPPONENT';
+    computerBtn.textContent = 'COMPUTER';
+    playerBtn.textContent = 'PLAYER';
+
+    selectOpponentModal.appendChild(modalText);
+    selectOpponentModal.appendChild(computerBtn);
+    selectOpponentModal.appendChild(playerBtn);
+
+    document.body.appendChild(selectOpponentModal);
+}
+
+export function hideOpponentModal(){
+    const modal = document.querySelector('.select-opponent');
+
+    modal.classList.add('hide');
+}
