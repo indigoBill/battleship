@@ -1,9 +1,9 @@
 import './stylesheets/game-style.css';
 
-export function generateUiBoard(board){
+export function generateUiBoard(board, additionalClassName){
     const uiBoard = document.createElement('div');
 
-    uiBoard.classList.add('board');
+    uiBoard.classList.add('board', additionalClassName);
 
     board.forEach((boardRow, index) => {
         const uiRow = document.createElement('div');
@@ -22,7 +22,7 @@ export function generateUiBoard(board){
         uiBoard.appendChild(uiRow);
     });
 
-    document.body.appendChild(uiBoard);
+    // document.body.appendChild(uiBoard);
 
     return uiBoard;
 }
@@ -40,14 +40,6 @@ export function updateUiBoard(uiBoard, board){
             }
         });
     });
-}
-
-export function createRotateBtn(){
-    const rotateBtn = document.createElement('button');
-    rotateBtn.classList.add('rotate-btn');
-    rotateBtn.textContent = 'ROTATE';
-
-    document.body.appendChild(rotateBtn);
 }
 
 export function updateClassList(domObj, className, toBeRemoved){
@@ -122,4 +114,77 @@ export function hideOpponentModal(){
     const modal = document.querySelector('.select-opponent');
 
     modal.classList.add('hide');
+}
+
+export function createPlaceShipsPage(uiBoard1, uiBoard2){
+    const boardTextContainer = document.createElement('div');
+    const placeShipText = document.createElement('p');
+    const rotateBtn = document.createElement('button');
+
+    boardTextContainer.classList.add('board-text-container');
+    placeShipText.classList.add('place-ship-text');
+    uiBoard2.classList.add('hide');
+    rotateBtn.classList.add('rotate-btn');
+
+    placeShipText.textContent = 'PLACE YOUR SHIPS';
+    rotateBtn.textContent = 'ROTATE';
+
+    boardTextContainer.appendChild(placeShipText);
+    boardTextContainer.appendChild(uiBoard1);
+    boardTextContainer.appendChild(uiBoard2);
+    boardTextContainer.appendChild(rotateBtn);
+    document.body.appendChild(boardTextContainer);
+}
+
+export function updatePlaceShipsPage(){
+    const gameBoards = document.querySelectorAll('.board');
+
+    gameBoards.forEach((board) => {
+        board.classList.toggle('hide');
+    });
+}
+
+export function createPassTheDevicePage(){
+    const textContainer = document.createElement('div');
+    const passTheDeviceText = document.createElement('p');
+    const countDown = document.createElement('p');
+
+    textContainer.classList.add('pass-device-container');
+    textContainer.classList.add('hide');
+    countDown.classList.add('count-down');
+
+    passTheDeviceText.textContent = 'PASS THE DEVICE TO THE NEXT PLAYER';
+    countDown.textContent = '3';
+
+    textContainer.appendChild(passTheDeviceText);
+    textContainer.appendChild(countDown);
+
+    document.body.appendChild(textContainer);
+}
+
+function resetCountDown(){
+    const countDown = document.querySelector('.count-down');
+
+    countDown.textContent = '3';
+}
+
+export function toggleDisplayForPassDevice(countDownFunction){
+    const textContainer = document.querySelector('.pass-device-container');
+
+    textContainer.classList.toggle('hide');
+
+    if(!textContainer.classList.contains('hide')) countDownFunction();
+    else resetCountDown();
+}
+
+export function createGameUi(){
+    const boardTextContainer = document.querySelector('.board-text-container');
+    const uiBoards = document.querySelectorAll('.board');
+
+    uiBoards.forEach((uiBoard) => {
+        uiBoard.classList.remove('hide');
+        document.body.appendChild(uiBoard);
+    });
+
+    boardTextContainer.remove();
 }
