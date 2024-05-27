@@ -1,30 +1,19 @@
 import Player from './factories/player';
 import Ship from './factories/ship';
 
-import { generateUiBoard, toggleBoardState, updateBoxDisplay, setActiveBoard, updateUiBoard, updateClassList, createRotateBtn, createSelectOpponentModal, hideOpponentModal } from './game-ui';
+import { generateUiBoard, toggleBoardState, updateBoxDisplay, setActiveBoard, 
+        updateUiBoard, updateClassList, createSelectOpponentModal, hideOpponentModal, 
+        createPlaceShipsPage, updatePlaceShipsPage, createGameUi, createPassTheDevicePage,
+        toggleDisplayForPassDevice } from './game-ui';
 import { getComputerMove, generateRandomShipPlacement } from './computerPlayer';
-
-//  /////////////////////////////////////////////////////////////////////////
 
 const allShips = [Ship(5), Ship(4), Ship(3), Ship(3), Ship(2)];
 let computerOpponent;
 
-// const player1 = Player('player1');
-// const player2 = Player();
-// const board1 = player1.getBoard();
-// const board2 = player2.getBoard();
-
-// createRotateBtn();
-
-// const uiBoard1 = generateUiBoard(board1.getBoard());
-// const uiBoard2 = generateUiBoard(board2.getBoard());
-
-//  ///////////////////////////////////////////////////////////////////////////////
-
 function getNextMove(){
     toggleBoardState(uiBoard2);
 
-    if(player2.getPlayerName() === 'Computer'){
+    if(computerOpponent){
         setTimeout(() => {
             getComputerMove(uiBoard1, board1);
 
@@ -64,62 +53,84 @@ function addEventListenerToBoard(uiBoard, board){
     });
 }
 
-// function addEventListenerToRotateBtn(){
-//     const rotateBtn = document.querySelector('.rotate-btn');
+function startCountDown(){
+    const countDown = document.querySelector('.count-down');
+    let currNum = Number(countDown.textContent);
 
-//     rotateBtn.addEventListener('click', (e) => {
-        
-//     });
-// }
+    const countDownInterval = setInterval(() => {
+        countDown.textContent = `${currNum-=1}`;
+
+        if(!currNum){
+            clearInterval(countDownInterval);
+            toggleDisplayForPassDevice();
+        }
+
+    }, 1000);
+}
+
+function removeEventListeners(eventHandler){
+    const uiBoxes = document.querySelectorAll('.box');
+    uiBoxes.forEach((box) => {
+        box.removeEventListener('click', () => eventHandler);
+    });
+}
 
 function placeShipsOnBoard(uiBoard, board){
     const boxes = uiBoard.querySelectorAll('.box');
     let shipIndex = 0;
 
-    boxes.forEach((box) => {
-        box.addEventListener('mouseover', (e) => {
-            if(shipIndex < allShips.length){
-                const boxIndex = Number(e.target.getAttribute('box'));
-                const currShipLength = allShips[shipIndex].getLength();
-                const shipEndPosition = boxIndex + (currShipLength - 1);
-                let currBox = e.target;
+    function mouseOverEvent(e){
+        if(shipIndex < allShips.length){
+            const boxIndex = Number(e.target.getAttribute('box'));
+            const currShipLength = allShips[shipIndex].getLength();
+            const shipEndPosition = boxIndex + (currShipLength - 1);
+            let currBox = e.target;
 
-                //  LARGEST INDEX ON A GAMEBOARD IS 9
-                if(shipEndPosition < 10){
-                    while(document.querySelectorAll('.highlight').length < currShipLength){
-                        // e.target.classList.add('highlight');
-                        // currBox.nextSibling.classList.add('highlight');
+            //  LARGEST INDEX ON A GAMEBOARD IS 9
+            if(shipEndPosition < 10){
+                while(document.querySelectorAll('.highlight').length < currShipLength){
+                    updateClassList(e.target, 'highlight');
+                    updateClassList(currBox.nextSibling, 'highlight');
 
-                        updateClassList(e.target, 'highlight');
-                        updateClassList(currBox.nextSibling, 'highlight');
-
-                        currBox = currBox.nextSibling;
-                    }
+                    currBox = currBox.nextSibling;
                 }
             }
+        }
+    }
+
+    function mouseOutEvent(){
+        const highlightedBoxes = document.querySelectorAll('.highlight');
+
+        highlightedBoxes.forEach((highlightedBox) => {
+            updateClassList(highlightedBox, 'highlight', true);
         });
+    }
 
-        box.addEventListener('mouseout', () => {
-            const highlightedBoxes = document.querySelectorAll('.highlight');
+    function mouseClickEvent(e){
+        const row = Number(e.target.parentElement.getAttribute('row'));
+        const column = Number(e.target.getAttribute('box'));
 
-            highlightedBoxes.forEach((highlightedBox) => {
-                // highlightedBox.classList.remove('highlight');
+        if(shipIndex < allShips.length && board.placeShip(allShips[shipIndex], [row, column])){
+            updateUiBoard(uiBoard, board);
+            shipIndex += 1;
+        }
 
-                updateClassList(highlightedBox, 'highlight', true);
-            });
-        });
-
-        box.addEventListener('click', (e) => {
-            const row = Number(e.target.parentElement.getAttribute('row'));
-            const column = Number(e.target.getAttribute('box'));
-
-            if(shipIndex < allShips.length && board.placeShip(allShips[shipIndex], [row, column])){
-                updateUiBoard(uiBoard, board);
-                shipIndex += 1;
+        if(shipIndex === allShips.length){
+            if(computerOpponent || (!computerOpponent && uiBoard.classList.contains('2'))){
+                createGameUi();
+                removeEventListeners(mouseClickEvent);
             }else{
-                box.removeEventListener('click', )
+                createPassTheDevicePage();
+                toggleDisplayForPassDevice(startCountDown);
+                updatePlaceShipsPage();
             }
-        });
+        }
+    }
+
+    boxes.forEach((box) => {
+        box.addEventListener('mouseover', mouseOverEvent);
+        box.addEventListener('mouseout', mouseOutEvent);
+        box.addEventListener('click', mouseClickEvent);
     });
 }
 
@@ -128,21 +139,20 @@ function startGame(){
     const player2 = computerOpponent ? Player() : Player('player2');
     const board1 = player1.getBoard();
     const board2 = player2.getBoard();
-    
-    createRotateBtn();
-    
-    const uiBoard1 = generateUiBoard(board1.getBoard());
-    const uiBoard2 = generateUiBoard(board2.getBoard());
+    const uiBoard1 = generateUiBoard(board1.getBoard(), 1);
+    const uiBoard2 = generateUiBoard(board2.getBoard(), 2);
 
+    createPlaceShipsPage(uiBoard1, uiBoard2);
     placeShipsOnBoard(uiBoard1, board1);
 
-    if(player2.getPlayerName() === 'Computer'){
+    if(computerOpponent){
         setActiveBoard(uiBoard2);
         generateRandomShipPlacement(board2, allShips);
         addEventListenerToBoard(uiBoard2, board2);
     }else{
-        addEventListenerToBoard(uiBoard1, board1);
-        addEventListenerToBoard(uiBoard2, board2);
+        placeShipsOnBoard(uiBoard2, board2);
+        // addEventListenerToBoard(uiBoard1, board1);
+        // addEventListenerToBoard(uiBoard2, board2);
     }
 }
 
