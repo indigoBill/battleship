@@ -9,6 +9,7 @@ import { getComputerMove, generateRandomShipPlacement } from './computerPlayer';
 
 const allShips = [Ship(5), Ship(4), Ship(3), Ship(3), Ship(2)];
 let computerOpponent;
+let isVertical;
 
 function getNextMove(){
     toggleBoardState(uiBoard2);
@@ -33,7 +34,7 @@ function getAttackCoordinates(e){
     return [row,column];
 }
 
-function addEventListenerToBoard(uiBoard, board){
+function addAttackEventListeners(uiBoard, board){
     const boxes = uiBoard.querySelectorAll('.box');
 
     boxes.forEach((box) => {
@@ -68,10 +69,10 @@ function startCountDown(){
     }, 1000);
 }
 
-function removeEventListeners(eventHandler){
-    const uiBoxes = document.querySelectorAll('.box');
+function removePlacementEventListeners(uiBoard, eventHandler){
+    const uiBoxes = uiBoard.querySelectorAll('.box');
     uiBoxes.forEach((box) => {
-        box.removeEventListener('click', () => eventHandler);
+        box.removeEventListener('click', eventHandler);
     });
 }
 
@@ -82,17 +83,23 @@ function placeShipsOnBoard(uiBoard, board){
     function mouseOverEvent(e){
         if(shipIndex < allShips.length){
             const boxIndex = Number(e.target.getAttribute('box'));
+            const rowIndex = Number(e.target.parentElement.getAttribute('row'));
             const currShipLength = allShips[shipIndex].getLength();
-            const shipEndPosition = boxIndex + (currShipLength - 1);
+            const shipEndPosition = isVertical ? rowIndex + (currShipLength - 1) : boxIndex + (currShipLength - 1);
             let currBox = e.target;
 
             //  LARGEST INDEX ON A GAMEBOARD IS 9
             if(shipEndPosition < 10){
                 while(document.querySelectorAll('.highlight').length < currShipLength){
                     updateClassList(e.target, 'highlight');
-                    updateClassList(currBox.nextSibling, 'highlight');
-
-                    currBox = currBox.nextSibling;
+                    if(!isVertical){
+                        updateClassList(currBox.nextSibling, 'highlight');
+                        currBox = currBox.nextSibling;
+                    }else{
+                        const boxBelow = currBox.parentElement.nextSibling.querySelector(`[box = "${boxIndex}"]`);
+                        updateClassList(boxBelow, 'highlight');
+                        currBox = boxBelow;
+                    }
                 }
             }
         }
@@ -110,15 +117,18 @@ function placeShipsOnBoard(uiBoard, board){
         const row = Number(e.target.parentElement.getAttribute('row'));
         const column = Number(e.target.getAttribute('box'));
 
-        if(shipIndex < allShips.length && board.placeShip(allShips[shipIndex], [row, column])){
+        if(shipIndex < allShips.length && board.placeShip(allShips[shipIndex], [row, column], isVertical)){
             updateUiBoard(uiBoard, board);
             shipIndex += 1;
         }
 
         if(shipIndex === allShips.length){
-            if(computerOpponent || (!computerOpponent && uiBoard.classList.contains('2'))){
+            removePlacementEventListeners(uiBoard, mouseClickEvent);
+
+            if(!computerOpponent) addAttackEventListeners(uiBoard, board);
+
+            if(computerOpponent || (!computerOpponent && uiBoard.classList.contains('board-two'))){
                 createGameUi();
-                removeEventListeners(mouseClickEvent);
             }else{
                 createPassTheDevicePage();
                 toggleDisplayForPassDevice(startCountDown);
@@ -134,25 +144,33 @@ function placeShipsOnBoard(uiBoard, board){
     });
 }
 
+function addRotateBtnEventListener(){
+    const rotateBtn = document.querySelector('.rotate-btn');
+
+    rotateBtn.addEventListener('click', () => {
+        if(isVertical) isVertical = false;
+        else isVertical = true;
+    });
+}
+
 function startGame(){
     const player1 = Player('player1');
     const player2 = computerOpponent ? Player() : Player('player2');
     const board1 = player1.getBoard();
     const board2 = player2.getBoard();
-    const uiBoard1 = generateUiBoard(board1.getBoard(), 1);
-    const uiBoard2 = generateUiBoard(board2.getBoard(), 2);
+    const uiBoard1 = generateUiBoard(board1.getBoard(), 'board-one');
+    const uiBoard2 = generateUiBoard(board2.getBoard(), 'board-two');
 
     createPlaceShipsPage(uiBoard1, uiBoard2);
+    addRotateBtnEventListener();
     placeShipsOnBoard(uiBoard1, board1);
 
     if(computerOpponent){
         setActiveBoard(uiBoard2);
         generateRandomShipPlacement(board2, allShips);
-        addEventListenerToBoard(uiBoard2, board2);
+        addAttackEventListeners(uiBoard2, board2);
     }else{
         placeShipsOnBoard(uiBoard2, board2);
-        // addEventListenerToBoard(uiBoard1, board1);
-        // addEventListenerToBoard(uiBoard2, board2);
     }
 }
 
