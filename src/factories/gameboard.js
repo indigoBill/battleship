@@ -12,43 +12,50 @@ export default function Gameboard(){
         return missedShots;
     }
 
-    function placeShip(obj, coordinates){
-        //  HORIZONTAL PLACEMENT
+    function placeShip(obj, coordinates, isVertical){
         const row = coordinates[0];
-        const column = coordinates[1];
+        const box = coordinates[1];
 
         //  POSSIBLE POSITIONS ONBOARD ARE BETWEEN 0 & 9, INCLUSIVE
         if(!(row < 10 && row > -1)) return false;
 
-        if(!(column < 10 && column > -1)) return false;
+        if(!(box < 10 && box > -1)) return false;
 
-        if(board[row][column]) return false;
+        if(board[row][box]) return false;
 
         if(obj.getLength() > 1){
-            const endColumn = column + (obj.getLength() - 1);
+            const endBox = isVertical ? row + (obj.getLength() - 1) : box + (obj.getLength() - 1);
 
-            if(endColumn < 10){
-                for(let spacesToFill = column; spacesToFill <= endColumn; spacesToFill+=1){
-                    board[row][spacesToFill] = obj;
+            if(endBox < 10){
+                const location = [];
+                let spacesToFill = isVertical ? row : box;
+
+                for(    ; spacesToFill <= endBox; spacesToFill+=1){
+                    if(!isVertical) board[row][spacesToFill] = obj;
+                    else board[spacesToFill][box] = obj;
                 }
-                shipLocations.push([[row, column],[row, endColumn]]);
 
-                return [[row, column],[row, endColumn]];
+                if(!isVertical) location.push([[row, box],[row, endBox]]);
+                else location.push([[row, box],[endBox, box]]);
+
+                shipLocations.push(location[0]);
+
+                return location[0];
             }
 
             return false;
         }
 
-        board[row][column] = obj;
-        shipLocations.push([row, column]);
+        board[row][box] = obj;
+        shipLocations.push([row, box]);
 
-        return [row, column];   
+        return [row, box];   
     }
 
     function receiveAttack(coordinates){
         const row = coordinates[0];
-        const column = coordinates[1];
-        const ship = board[row][column];
+        const box = coordinates[1];
+        const ship = board[row][box];
 
         if(ship) ship.hit();
         else missedShots.push(coordinates);
