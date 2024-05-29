@@ -1,30 +1,59 @@
 import Player from './factories/player';
 import Ship from './factories/ship';
 
-import { generateUiBoard, toggleBoardState, updateBoxDisplay, setActiveBoard, 
+import { generateUiBoard, toggleBoardState, updateBoxDisplay, setActiveUiBoard, 
         updateUiBoard, updateClassList, createSelectOpponentModal, hideOpponentModal, 
         createPlaceShipsPage, updatePlaceShipsPage, createGameUi, createPassTheDevicePage,
         toggleDisplayForPassDevice } from './game-ui';
 import { getComputerMove, generateRandomShipPlacement } from './computerPlayer';
 
 const allShips = [Ship(5), Ship(4), Ship(3), Ship(3), Ship(2)];
+const activeBoards = [];
+const inactiveBoards = [];
 let computerOpponent;
 let isVertical;
 
-function getNextMove(){
-    toggleBoardState(uiBoard2);
+function startCountDown(){
+    const countDown = document.querySelector('.count-down');
+    let currNum = Number(countDown.textContent);
 
+    const countDownInterval = setInterval(() => {
+        countDown.textContent = `${currNum-=1}`;
+
+        if(!currNum){
+            clearInterval(countDownInterval);
+            toggleDisplayForPassDevice();
+        }
+
+    }, 1000);
+}
+
+function getNextMove(attackedBoard){
     if(computerOpponent){
-        setTimeout(() => {
-            getComputerMove(uiBoard1, board1);
+        toggleBoardState(attackedBoard);
 
-            if(board1.checkStatusOfShips()) console.log('GAME OVER');
-            else toggleBoardState(uiBoard2);
+        setTimeout(() => {
+            getComputerMove(inactiveBoards[0][0], inactiveBoards[0][1]);
+
+            if(inactiveBoards[0][1].checkStatusOfShips()) console.log('GAME OVER');
+            else toggleBoardState(attackedBoard);
 
         }, 500);
     }else{
         //  IF PLAYER IS PERSON SHOW NEXT PLAYER SCREEN FOR 5 SEC THEN CHANGE DISPLAY TO SHOW OTHER PLAYER BOARD
+        toggleDisplayForPassDevice(startCountDown);
+
     }
+}
+
+//  ACTIVE BOARD IS THE BOARD THAT WILL BE ATTACKED
+//  ALSO ACTIVE BOARDS WILL NOT SHOW SHIP LOCATIONS
+
+function switchActiveBoard(){
+    const newlyInactiveBoards = activeBoards.splice(0,1, inactiveBoards[0]);
+
+    inactiveBoards.splice(0,1, newlyInactiveBoards[0]);
+    setActiveUiBoard(activeBoards[0][0]);
 }
 
 function getAttackCoordinates(e){
@@ -41,32 +70,19 @@ function addAttackEventListeners(uiBoard, board){
         box.addEventListener('click', (e) => {
             if(!e.target.classList.contains('hit')){
                 const coordinates = getAttackCoordinates(e);
-            
+
+                if(!computerOpponent) switchActiveBoard();
+
                 board.receiveAttack(coordinates);
 
                 if(board.getBoard()[coordinates[0]][coordinates[1]]) updateBoxDisplay(e.target, true);
                 else updateBoxDisplay(e.target);
                 
                 if(board.checkStatusOfShips()) console.log('GAME OVER');
-                else getNextMove();
+                else getNextMove(uiBoard);
             }
         });
     });
-}
-
-function startCountDown(){
-    const countDown = document.querySelector('.count-down');
-    let currNum = Number(countDown.textContent);
-
-    const countDownInterval = setInterval(() => {
-        countDown.textContent = `${currNum-=1}`;
-
-        if(!currNum){
-            clearInterval(countDownInterval);
-            toggleDisplayForPassDevice();
-        }
-
-    }, 1000);
 }
 
 function removePlacementEventListeners(uiBoard, eventHandler){
@@ -129,6 +145,7 @@ function placeShipsOnBoard(uiBoard, board){
 
             if(computerOpponent || (!computerOpponent && uiBoard.classList.contains('board-two'))){
                 createGameUi();
+                setActiveUiBoard(activeBoards[0][0]);
             }else{
                 createPassTheDevicePage();
                 toggleDisplayForPassDevice(startCountDown);
@@ -161,12 +178,14 @@ function startGame(){
     const uiBoard1 = generateUiBoard(board1.getBoard(), 'board-one');
     const uiBoard2 = generateUiBoard(board2.getBoard(), 'board-two');
 
+    activeBoards.push([uiBoard2, board2]);
+    inactiveBoards.push([uiBoard1, board1]);
+
     createPlaceShipsPage(uiBoard1, uiBoard2);
     addRotateBtnEventListener();
     placeShipsOnBoard(uiBoard1, board1);
 
     if(computerOpponent){
-        setActiveBoard(uiBoard2);
         generateRandomShipPlacement(board2, allShips);
         addAttackEventListeners(uiBoard2, board2);
     }else{
