@@ -1,5 +1,8 @@
 import './stylesheets/game-style.css';
 
+const uiBoard1ShipBoxes = [];
+const uiBoard2ShipBoxes = [];
+
 export function generateUiBoard(board, additionalClassName){
     const uiBoard = document.createElement('div');
 
@@ -55,14 +58,28 @@ function toggleBoxDisplay(uiBoard){
     const shipBoxes = uiBoard.querySelectorAll('.filled-box');
 
     if(uiBoard.classList.contains('not-active')){
-        shipBoxes.forEach((box) => {
-            box.classList.add('filled-box');
-        });
+        if(uiBoard.classList.contains('board-one')){
+            uiBoard1ShipBoxes.forEach((box) => {
+                box.classList.add('filled-box');
+            });
+        }else{
+            uiBoard2ShipBoxes.forEach((box) => {
+                box.classList.add('filled-box');
+            });
+        }
     }else{
         shipBoxes.forEach((box) => {
+            if(uiBoard.classList.contains('board-one')){
+                if(uiBoard1ShipBoxes.length === 0) uiBoard1ShipBoxes.push(box);
+            }else if(uiBoard.classList.contains('board-two')){
+                if(uiBoard2ShipBoxes.length === 0) uiBoard2ShipBoxes.push(box);
+            }
+            
             box.classList.remove('filled-box');
         });
     }
+
+    
 }
 
 export function updateBoxDisplay(domBox, shipExists){
@@ -72,7 +89,7 @@ export function updateBoxDisplay(domBox, shipExists){
     else domBox.classList.add('ship-missed');
 }
 
-export function setActiveBoard(domBoard){
+export function setActiveUiBoard(domBoard){
     const gameBoards = document.querySelectorAll('.board');
 
     gameBoards.forEach((board) => {        
@@ -83,7 +100,6 @@ export function setActiveBoard(domBoard){
             board.classList.add('not-active');
             board.classList.remove('active');
         } 
-
         toggleBoxDisplay(board);
     });
 }
