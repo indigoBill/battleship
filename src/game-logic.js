@@ -40,14 +40,9 @@ function getNextMove(attackedBoard){
 
         }, 500);
     }else{
-        //  IF PLAYER IS PERSON SHOW NEXT PLAYER SCREEN FOR 5 SEC THEN CHANGE DISPLAY TO SHOW OTHER PLAYER BOARD
         toggleDisplayForPassDevice(startCountDown);
-
     }
 }
-
-//  ACTIVE BOARD IS THE BOARD THAT WILL BE ATTACKED
-//  ALSO ACTIVE BOARDS WILL NOT SHOW SHIP LOCATIONS
 
 function switchActiveBoard(){
     const newlyInactiveBoards = activeBoards.splice(0,1, inactiveBoards[0]);
@@ -68,7 +63,7 @@ function addAttackEventListeners(uiBoard, board){
 
     boxes.forEach((box) => {
         box.addEventListener('click', (e) => {
-            if(!e.target.classList.contains('hit')){
+            if(!e.target.classList.contains('hit') && activeBoards[0][0] === uiBoard){
                 const coordinates = getAttackCoordinates(e);
 
                 if(!computerOpponent) switchActiveBoard();
