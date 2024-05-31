@@ -16,33 +16,56 @@ function getRandomMove(){
     return [row, column];
 }
 
-function checkForOverlappingPlacement(board, coordinate, endPositions){
-    if(board.getBoard()[coordinate[0]][endPositions[0]]){
-        return true;
+function checkForOverlappingPlacement(board, shipCoordinates, shipIsVertical){
+    const shipStart = shipCoordinates[0];
+    const shipEnd = shipCoordinates[1];
+
+    if(shipIsVertical){
+        // if(board.getBoard()[endPosition[0]][coordinate[1]]) return true;
+
+        const rowStart = shipStart[0];
+        const rowEnd = shipEnd[0];
+
+        for(let currRow = rowStart; currRow <= rowEnd; currRow+=1){
+            if(board.getBoard()[currRow][shipStart[1]]) return true;
+        }
+
+    }else if(!shipIsVertical){
+        // if(board.getBoard()[coordinate[0]][endPosition[0]]) return true;
+
+        const columnStart = shipStart[1];
+        const columnEnd = shipEnd[1];
+
+        for(let currColumn = columnStart; currColumn <= columnEnd; currColumn+=1){
+            if(board.getBoard()[shipStart[0]][currColumn]) return true;
+        }
     }
+    
     return false;
 }
 
-function getEmptyBoardPlacement(board, shipLength){
+function getEmptyBoardPlacement(board, shipLength, verticalPlacement){
     const coordinate = getRandomMove();
-    const shipHorizEnd = coordinate[1] + shipLength;
+    const shipEnd = verticalPlacement ? coordinate[0] + shipLength : coordinate[1] + shipLength;
+    const shipCoordinates = verticalPlacement ? [coordinate, [shipEnd, coordinate[1]]] : [coordinate, [coordinate[0], shipEnd]]; 
+    const overlappingPlacement = (shipEnd >= 10) ? false : checkForOverlappingPlacement(board, shipCoordinates, verticalPlacement);
 
-    //  WILL NEED TO ADJUST FOR VERTICAL END WHEN ADDING ROTATE FUNCTIONALITY
-    const overlappingPlacement = checkForOverlappingPlacement(board, coordinate, [shipHorizEnd, /* shipVertEnd */])
-    //  WILL NEED TO ADJUST FOR VERTICAL END WHEN ADDING ROTATE FUNCTIONALITY
-    if(board.getBoard()[coordinate[0]][coordinate[1]] || shipHorizEnd >= 10 || overlappingPlacement){
-        return getEmptyBoardPlacement(board, shipLength);
+    if(board.getBoard()[coordinate[0]][coordinate[1]] || overlappingPlacement){
+        return getEmptyBoardPlacement(board, shipLength, verticalPlacement);
     }
 
     return coordinate;
 }
 
 export function generateRandomShipPlacement(board, ships){
-    ships.forEach((ship) => {
-        const coordinates = getEmptyBoardPlacement(board, ship.getLength());
+    ships.forEach((ship, index) => {
+        const verticalPlacement = index % 2 === 0;
+        const coordinates = getEmptyBoardPlacement(board, ship.getLength(), verticalPlacement);
 
-        board.placeShip(Ship(ship.getLength()), coordinates);
+        console.log(coordinates)
+        board.placeShip(Ship(ship.getLength()), coordinates, verticalPlacement);
     });
+    console.log(board.getBoard());
 }
 
 function validateCoordinates(xCoor, yCoor){
@@ -64,7 +87,6 @@ function loadAllPossibleMoves(){
     POSSIBLE_PLAYS.forEach((move) => {
         const newRow = row + move[0];
         const newColumn = column + move[1];
-
         const validCoor = validateCoordinates(newRow, newColumn);
 
         if(validCoor) nextPossibleMoves.push(validCoor);
