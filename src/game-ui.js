@@ -25,8 +25,6 @@ export function generateUiBoard(board, additionalClassName){
         uiBoard.appendChild(uiRow);
     });
 
-    // document.body.appendChild(uiBoard);
-
     return uiBoard;
 }
 
@@ -69,17 +67,15 @@ function toggleBoxDisplay(uiBoard){
         }
     }else{
         shipBoxes.forEach((box) => {
-            if(uiBoard.classList.contains('board-one')){
-                if(uiBoard1ShipBoxes.length === 0) uiBoard1ShipBoxes.push(box);
-            }else if(uiBoard.classList.contains('board-two')){
-                if(uiBoard2ShipBoxes.length === 0) uiBoard2ShipBoxes.push(box);
+            if(uiBoard.classList.contains('board-one') && uiBoard1ShipBoxes.length <= shipBoxes.length){
+                uiBoard1ShipBoxes.push(box);
+            }else if(uiBoard.classList.contains('board-two') && uiBoard2ShipBoxes.length <= shipBoxes.length){
+                uiBoard2ShipBoxes.push(box);
             }
             
             box.classList.remove('filled-box');
         });
     }
-
-    
 }
 
 export function updateBoxDisplay(domBox, shipExists){
