@@ -58,7 +58,6 @@ export function generateRandomShipPlacement(board, ships){
         const verticalPlacement = index % 2 === 0;
         const coordinates = getEmptyBoardPlacement(board, ship.getLength(), verticalPlacement);
 
-        console.log(coordinates)
         board.placeShip(Ship(ship.getLength()), coordinates, verticalPlacement);
     });
 }
