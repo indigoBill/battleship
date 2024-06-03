@@ -122,10 +122,10 @@ export function createSelectOpponentModal(){
     document.body.appendChild(selectOpponentModal);
 }
 
-export function hideOpponentModal(){
+export function toggleOpponentModalDisplay(){
     const modal = document.querySelector('.select-opponent');
 
-    modal.classList.add('hide');
+    modal.classList.toggle('hide');
 }
 
 export function createPlaceShipsPage(uiBoard1, uiBoard2){
@@ -199,4 +199,21 @@ export function createGameUi(){
     });
 
     boardTextContainer.remove();
+}
+
+export function createGameOverModal(winningPlayer){
+    const gameOverModal = document.createElement('div');
+    const gameOverText = document.createElement('p');
+    const playAgainBtn = document.createElement('button');
+
+    gameOverModal.classList.add('game-over-modal');
+    gameOverText.classList.add('game-over-text');
+    playAgainBtn.classList.add('play-again-btn');
+
+    gameOverText.textContent = `${winningPlayer.toUpperCase()} WINS!`;
+    playAgainBtn.textContent = 'PLAY AGAIN';
+
+    gameOverModal.appendChild(gameOverText);
+    gameOverModal.appendChild(playAgainBtn);
+    document.body.appendChild(gameOverModal);
 }
