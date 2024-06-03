@@ -2,14 +2,14 @@ import Player from './factories/player';
 import Ship from './factories/ship';
 
 import { generateUiBoard, toggleBoardState, updateBoxDisplay, setActiveUiBoard, 
-        updateUiBoard, updateClassList, createSelectOpponentModal, hideOpponentModal, 
+        updateUiBoard, updateClassList, createSelectOpponentModal, toggleOpponentModalDisplay, 
         createPlaceShipsPage, updatePlaceShipsPage, createGameUi, createPassTheDevicePage,
-        toggleDisplayForPassDevice } from './game-ui';
+        toggleDisplayForPassDevice, createGameOverModal } from './game-ui';
 import { getComputerMove, generateRandomShipPlacement } from './computerPlayer';
 
 const allShips = [Ship(5), Ship(4), Ship(3), Ship(3), Ship(2)];
-const activeBoards = [];
-const inactiveBoards = [];
+const activeBoardInfo = [];
+const inactiveBoardInfo = [];
 let computerOpponent;
 let isVertical;
 
@@ -28,15 +28,33 @@ function startCountDown(){
     }, 1000);
 }
 
+function addPlayAgainBtnEventListener(){
+    const playAgainBtn = document.querySelector('.play-again-btn');
+
+    playAgainBtn.addEventListener('click', () => {
+        const allDomObjs = document.querySelectorAll('body > div:not(.select-opponent)');
+
+        allDomObjs.forEach((obj) => obj.remove());
+        activeBoardInfo.length = 0;
+        inactiveBoardInfo.length = 0;
+
+        toggleOpponentModalDisplay();
+    });
+}
+
 function getNextMove(attackedBoard){
     if(computerOpponent){
         toggleBoardState(attackedBoard);
 
         setTimeout(() => {
-            getComputerMove(inactiveBoards[0][0], inactiveBoards[0][1]);
+            getComputerMove(inactiveBoardInfo[0][0], inactiveBoardInfo[0][1].getBoard());
 
-            if(inactiveBoards[0][1].checkStatusOfShips()) console.log('GAME OVER');
-            else toggleBoardState(attackedBoard);
+            if(inactiveBoardInfo[0][1].getBoard().checkStatusOfShips()){
+                createGameOverModal(activeBoardInfo[0][1].getPlayerName());
+                addPlayAgainBtnEventListener();
+            }else{
+                toggleBoardState(attackedBoard);
+            }
 
         }, 500);
     }else{
@@ -45,10 +63,10 @@ function getNextMove(attackedBoard){
 }
 
 function switchActiveBoard(){
-    const newlyInactiveBoards = activeBoards.splice(0,1, inactiveBoards[0]);
+    const newlyInactiveBoards = activeBoardInfo.splice(0,1, inactiveBoardInfo[0]);
 
-    inactiveBoards.splice(0,1, newlyInactiveBoards[0]);
-    setActiveUiBoard(activeBoards[0][0]);
+    inactiveBoardInfo.splice(0,1, newlyInactiveBoards[0]);
+    setActiveUiBoard(activeBoardInfo[0][0]);
 }
 
 function getAttackCoordinates(e){
@@ -63,7 +81,7 @@ function addAttackEventListeners(uiBoard, board){
 
     boxes.forEach((box) => {
         box.addEventListener('click', (e) => {
-            if(!e.target.classList.contains('hit') && activeBoards[0][0] === uiBoard){
+            if(!e.target.classList.contains('hit') && activeBoardInfo[0][0] === uiBoard){
                 const coordinates = getAttackCoordinates(e);
 
                 if(!computerOpponent) switchActiveBoard();
@@ -73,8 +91,12 @@ function addAttackEventListeners(uiBoard, board){
                 if(board.getBoard()[coordinates[0]][coordinates[1]]) updateBoxDisplay(e.target, true);
                 else updateBoxDisplay(e.target);
                 
-                if(board.checkStatusOfShips()) console.log('GAME OVER');
-                else getNextMove(uiBoard);
+                if(board.checkStatusOfShips()){
+                    createGameOverModal(inactiveBoardInfo[0][1].getPlayerName());
+                    addPlayAgainBtnEventListener();
+                }else{
+                    getNextMove(uiBoard);
+                }
             }
         });
     });
@@ -128,7 +150,7 @@ function placeShipsOnBoard(uiBoard, board){
         const row = Number(e.target.parentElement.getAttribute('row'));
         const column = Number(e.target.getAttribute('box'));
 
-        if(shipIndex < allShips.length && board.placeShip(allShips[shipIndex], [row, column], isVertical)){
+        if(shipIndex < allShips.length && board.placeShip(Ship(allShips[shipIndex].getLength()), [row, column], isVertical)){
             updateUiBoard(uiBoard, board);
             shipIndex += 1;
         }
@@ -140,7 +162,7 @@ function placeShipsOnBoard(uiBoard, board){
 
             if(computerOpponent || (!computerOpponent && uiBoard.classList.contains('board-two'))){
                 createGameUi();
-                setActiveUiBoard(activeBoards[0][0]);
+                setActiveUiBoard(activeBoardInfo[0][0]);
             }else{
                 createPassTheDevicePage();
                 toggleDisplayForPassDevice(startCountDown);
@@ -173,8 +195,8 @@ function startGame(){
     const uiBoard1 = generateUiBoard(board1.getBoard(), 'board-one');
     const uiBoard2 = generateUiBoard(board2.getBoard(), 'board-two');
 
-    activeBoards.push([uiBoard2, board2]);
-    inactiveBoards.push([uiBoard1, board1]);
+    activeBoardInfo.push([uiBoard2, player2]);
+    inactiveBoardInfo.push([uiBoard1, player1]);
 
     createPlaceShipsPage(uiBoard1, uiBoard2);
     addRotateBtnEventListener();
@@ -196,7 +218,7 @@ function addEventListenerToModal(){
             if(e.target.textContent === 'COMPUTER') computerOpponent = true;
             else computerOpponent = false;
 
-            hideOpponentModal();
+            toggleOpponentModalDisplay();
             startGame();
         });
     });
