@@ -71,7 +71,7 @@ export default function Gameboard(){
             if(ship.isSunk()) numOfShipsSunk += 1;
             if(numOfShipsSunk === totalAmountOfShips) allShipsSunk = true;
         });
-
+        
         return allShipsSunk;
     }
 
