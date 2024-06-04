@@ -1,5 +1,6 @@
 html {
     box-sizing: border-box;
+    height: 100%;
 }
 
 *, *:before, *:after {
@@ -8,21 +9,39 @@ html {
 
 body {
     display: flex;
-    justify-content: center;
+    flex-direction: column;
+    align-items: center;
     gap: 10px;
+    background-color: var(--platypus);
+    height: 100%;
 }
 
-.hide {
-    display: none;
+@font-face {
+    font-family: arcadeClassic;
+    src: url(../fonts/ARCADECLASSIC.TTF);
+}
+
+@font-face {
+    font-family: karmaArcade;
+    src: url(../fonts/ka1.ttf);
+}
+
+:root {
+    --platypus: rgb(3, 129, 129);
+    --cream: rgb(248, 231, 198);
+    --strawberry: rgb(238, 50, 90);
+    font-family: arcadeClassic, karmaArcade, system-ui, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
 }
 
 .row,
 .board {
     display: grid;
+    gap: 5px;
 }
 
 .board {
     grid-template-rows: repeat(10, min-content);
+    cursor: pointer;
 }
 
 .row {
@@ -36,9 +55,9 @@ body {
 }
 
 .box {
-    width: 20px;
-    height: 20px;
-    border: 1px solid rgb(77, 76, 76);
+    width: 40px;
+    height: 40px;
+    border: 3px solid var(--cream);
 }
 
 .active {
@@ -50,7 +69,7 @@ body {
 }
 
 .filled-box {
-    background-color: rgb(180, 178, 178);
+    background-color: var(--strawberry);
 }
 
 .ship-hit {
@@ -58,9 +77,132 @@ body {
 }
 
 .ship-missed {
-    background-color: red;
+    background-color: rgb(255, 0, 76);
 }
 
 .highlight {
     background-color: orange;
+}
+
+.page-logo-container {
+    width: 100%;
+    text-align: center;
+    border-top: 15px double var(--cream);
+    border-bottom: 15px double var(--cream);
+    padding-bottom: 20px;
+}
+
+.page-logo-text {
+    font-size: 4rem;
+    margin-top: 5px;
+    font-family: karmaArcade;
+    color: var(--cream);
+}
+
+.select-opponent {
+    background-color: var(--strawberry);
+    padding: 20px 10px;
+    width: 80%;
+    height: 30%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    outline: 8px dashed orange;
+    border-radius: 10px;
+    gap: 30px;
+    text-align: center;
+    margin: auto;
+}
+
+.select-opponent,
+.place-ship-text {
+    font-weight: bold;
+    font-size: 2em;
+    color: white;
+}
+
+.modal-text-container {
+    display: flex;
+    align-items: end;
+}
+
+.select-opponent > div:last-child {
+    display: flex;
+    gap: 20px;
+}
+
+button {
+    height: 50px;
+    width: 150px;
+    background-color: var(--strawberry);
+    font-family: arcadeClassic;
+    font-size: 1.4rem;
+    border: 4px solid var(--cream);
+    border-radius: 10px;
+    color: white;
+    font-weight: bold;
+}
+
+button:hover {
+    background-color: var(--cream);
+    color: var(--platypus);
+    text-decoration: underline;
+    border: 4px solid white;
+}
+
+.board-text-container {
+    margin: auto;
+}
+
+.board-text-container > div:first-child {
+    display: flex;
+    color: white;
+    align-items: end;
+}
+
+.board-text-container > div:first-child,
+.rotate-btn {
+    margin: 10px 0;
+}
+
+.ellipsis {
+    width: 30px;
+    text-align: left;
+    font-family: arcadeClassic;
+}
+
+.ellipsis::after {
+    overflow: hidden;
+    display: inline-block;
+    vertical-align: bottom;
+    -webkit-animation: ellipsis steps(4,end) 900ms infinite;      
+    animation: ellipsis steps(4,end) 900ms infinite;
+    content: "\2026";
+    width: 0px;
+    font-size: 32px;
+}
+
+@keyframes ellipsis {
+    to {
+        width: 1.25em;    
+    }
+}
+
+@-webkit-keyframes ellipsis {
+    to {
+        width: 1.25em;    
+    }
+}
+
+p {
+    margin: 0;
+}
+
+button {
+    cursor: pointer;
+}
+
+.hide {
+    display: none;
 }
