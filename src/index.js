@@ -1,5 +1,5 @@
-import chooseOpponent from './game-logic';
+import loadIntroScreen from './game-logic';
 
 document.addEventListener('DOMContentLoaded', () => {
-    chooseOpponent();
+    loadIntroScreen();
 });
