@@ -4,7 +4,8 @@ import Ship from './factories/ship';
 import { generateUiBoard, toggleBoardState, updateBoxDisplay, setActiveUiBoard, 
         updateUiBoard, updateClassList, createSelectOpponentModal, toggleOpponentModalDisplay, 
         createPlaceShipsPage, updatePlaceShipsPage, createGameUi, createPassTheDevicePage,
-        toggleDisplayForPassDevice, createGameOverModal } from './game-ui';
+        toggleDisplayForPassDevice, createGameOverModal, 
+        createPageLogo} from './game-ui';
 import { getComputerMove, generateRandomShipPlacement } from './computerPlayer';
 
 const allShips = [Ship(5), Ship(4), Ship(3), Ship(3), Ship(2)];
@@ -224,7 +225,8 @@ function addEventListenerToModal(){
     });
 }
 
-export default function chooseOpponent(){
+export default function loadIntroScreen(){
+    createPageLogo();
     createSelectOpponentModal();
     addEventListenerToModal();
 }
