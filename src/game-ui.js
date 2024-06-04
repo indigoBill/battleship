@@ -3,6 +3,19 @@ import './stylesheets/game-style.css';
 const uiBoard1ShipBoxes = [];
 const uiBoard2ShipBoxes = [];
 
+export function createPageLogo(){
+    const pageLogoContainer = document.createElement('div');
+    const pageLogoText = document.createElement('p');
+
+    pageLogoContainer.classList.add('page-logo-container');
+    pageLogoText.classList.add('page-logo-text');
+
+    pageLogoText.textContent = 'BATTLESHIP';
+
+    pageLogoContainer.appendChild(pageLogoText);
+    document.body.appendChild(pageLogoContainer);
+}
+
 export function generateUiBoard(board, additionalClassName){
     const uiBoard = document.createElement('div');
 
@@ -102,22 +115,31 @@ export function setActiveUiBoard(domBoard){
 
 export function createSelectOpponentModal(){
     const selectOpponentModal = document.createElement('div');
+    const textContainer = document.createElement('div');
     const modalText = document.createElement('p');
+    const ellipsis = document.createElement('span');
+    const btnContainer = document.createElement('div');
     const computerBtn = document.createElement('button');
     const playerBtn = document.createElement('button');
     
     selectOpponentModal.classList.add('select-opponent');
+    textContainer.classList.add('modal-text-container');
+    btnContainer.classList.add('modal-btn-container');
     modalText.classList.add('modal-text');
+    ellipsis.classList.add('ellipsis');
     computerBtn.classList.add('comp-btn', 'opponent-btn');
     playerBtn.classList.add('player-btn', 'opponent-btn');
 
-    modalText.textContent = 'SELECT OPPONENT';
+    modalText.textContent = 'SELECT YOUR OPPONENT';
     computerBtn.textContent = 'COMPUTER';
     playerBtn.textContent = 'PLAYER';
 
-    selectOpponentModal.appendChild(modalText);
-    selectOpponentModal.appendChild(computerBtn);
-    selectOpponentModal.appendChild(playerBtn);
+    selectOpponentModal.appendChild(textContainer);
+    selectOpponentModal.appendChild(btnContainer);
+    textContainer.appendChild(modalText);
+    textContainer.appendChild(ellipsis);
+    btnContainer.appendChild(computerBtn);
+    btnContainer.appendChild(playerBtn);
 
     document.body.appendChild(selectOpponentModal);
 }
@@ -130,18 +152,23 @@ export function toggleOpponentModalDisplay(){
 
 export function createPlaceShipsPage(uiBoard1, uiBoard2){
     const boardTextContainer = document.createElement('div');
+    const textContainer = document.createElement('div');
     const placeShipText = document.createElement('p');
+    const ellipsis = document.createElement('span');
     const rotateBtn = document.createElement('button');
 
     boardTextContainer.classList.add('board-text-container');
     placeShipText.classList.add('place-ship-text');
+    ellipsis.classList.add('ellipsis');
     uiBoard2.classList.add('hide');
     rotateBtn.classList.add('rotate-btn');
 
     placeShipText.textContent = 'PLACE YOUR SHIPS';
     rotateBtn.textContent = 'ROTATE';
 
-    boardTextContainer.appendChild(placeShipText);
+    textContainer.appendChild(placeShipText);
+    textContainer.appendChild(ellipsis);
+    boardTextContainer.appendChild(textContainer);
     boardTextContainer.appendChild(uiBoard1);
     boardTextContainer.appendChild(uiBoard2);
     boardTextContainer.appendChild(rotateBtn);
