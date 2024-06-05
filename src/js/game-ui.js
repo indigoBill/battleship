@@ -1,4 +1,4 @@
-import './stylesheets/game-style.css';
+import '../stylesheets/game-style.css';
 
 const uiBoard1ShipBoxes = [];
 const uiBoard2ShipBoxes = [];
