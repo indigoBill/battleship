@@ -19,7 +19,8 @@ export function createPageLogo(){
 export function generateUiBoard(board, additionalClassName){
     const uiBoard = document.createElement('div');
 
-    uiBoard.classList.add('board', additionalClassName);
+    if(typeof additionalClassName === 'string') uiBoard.classList.add(additionalClassName);
+    uiBoard.classList.add('board');
 
     board.forEach((boardRow, index) => {
         const uiRow = document.createElement('div');
@@ -92,10 +93,15 @@ function toggleBoxDisplay(uiBoard){
 }
 
 export function updateBoxDisplay(domBox, shipExists){
+    const boxContent = shipExists ? 'o' : 'x';
+    const box = domBox;
+
     domBox.classList.add('hit');
 
     if(shipExists) domBox.classList.add('ship-hit');
     else domBox.classList.add('ship-missed');
+
+    box.textContent = boxContent;
 }
 
 export function setActiveUiBoard(domBoard){
@@ -184,21 +190,24 @@ export function updatePlaceShipsPage(){
 }
 
 export function createPassTheDevicePage(){
+    const passDeviceModal = document.createElement('div');
     const textContainer = document.createElement('div');
     const passTheDeviceText = document.createElement('p');
     const countDown = document.createElement('p');
 
-    textContainer.classList.add('pass-device-container');
-    textContainer.classList.add('hide');
+    passDeviceModal.classList.add('pass-device-modal');
+    passDeviceModal.classList.add('hide');
+    textContainer.classList.add('pass-device-content');
     countDown.classList.add('count-down');
 
     passTheDeviceText.textContent = 'PASS THE DEVICE TO THE NEXT PLAYER';
     countDown.textContent = '3';
 
+    passDeviceModal.appendChild(textContainer);
     textContainer.appendChild(passTheDeviceText);
     textContainer.appendChild(countDown);
 
-    document.body.appendChild(textContainer);
+    document.body.appendChild(passDeviceModal);
 }
 
 function resetCountDown(){
@@ -208,7 +217,7 @@ function resetCountDown(){
 }
 
 export function toggleDisplayForPassDevice(countDownFunction){
-    const textContainer = document.querySelector('.pass-device-container');
+    const textContainer = document.querySelector('.pass-device-modal');
 
     textContainer.classList.toggle('hide');
 
@@ -218,29 +227,36 @@ export function toggleDisplayForPassDevice(countDownFunction){
 
 export function createGameUi(){
     const boardTextContainer = document.querySelector('.board-text-container');
+    const boardContainer = document.createElement('div');
     const uiBoards = document.querySelectorAll('.board');
+
+    boardContainer.classList.add('board-container');
 
     uiBoards.forEach((uiBoard) => {
         uiBoard.classList.remove('hide');
-        document.body.appendChild(uiBoard);
+        boardContainer.appendChild(uiBoard);
     });
 
     boardTextContainer.remove();
+    document.body.appendChild(boardContainer);
 }
 
 export function createGameOverModal(winningPlayer){
     const gameOverModal = document.createElement('div');
+    const gameOverContent = document.createElement('div');
     const gameOverText = document.createElement('p');
     const playAgainBtn = document.createElement('button');
 
     gameOverModal.classList.add('game-over-modal');
+    gameOverContent.classList.add('game-over-content');
     gameOverText.classList.add('game-over-text');
     playAgainBtn.classList.add('play-again-btn');
 
     gameOverText.textContent = `${winningPlayer.toUpperCase()} WINS!`;
     playAgainBtn.textContent = 'PLAY AGAIN';
 
-    gameOverModal.appendChild(gameOverText);
-    gameOverModal.appendChild(playAgainBtn);
+    gameOverModal.appendChild(gameOverContent);
+    gameOverContent.appendChild(gameOverText);
+    gameOverContent.appendChild(playAgainBtn);
     document.body.appendChild(gameOverModal);
 }

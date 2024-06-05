@@ -33,7 +33,7 @@ function addPlayAgainBtnEventListener(){
     const playAgainBtn = document.querySelector('.play-again-btn');
 
     playAgainBtn.addEventListener('click', () => {
-        const allDomObjs = document.querySelectorAll('body > div:not(.select-opponent)');
+        const allDomObjs = document.querySelectorAll('body > div:not(.select-opponent, .page-logo-container)');
 
         allDomObjs.forEach((obj) => obj.remove());
         activeBoardInfo.length = 0;
@@ -59,7 +59,9 @@ function getNextMove(attackedBoard){
 
         }, 500);
     }else{
-        toggleDisplayForPassDevice(startCountDown);
+        setTimeout(() => {
+            toggleDisplayForPassDevice(startCountDown);
+        }, 500);
     }
 }
 
@@ -85,7 +87,11 @@ function addAttackEventListeners(uiBoard, board){
             if(!e.target.classList.contains('hit') && activeBoardInfo[0][0] === uiBoard){
                 const coordinates = getAttackCoordinates(e);
 
-                if(!computerOpponent) switchActiveBoard();
+                if(!computerOpponent){
+                    setTimeout(() => {
+                        switchActiveBoard();
+                    }, 500);
+                }
 
                 board.receiveAttack(coordinates);
 
