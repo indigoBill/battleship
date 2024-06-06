@@ -37,7 +37,6 @@ body {
 .board {
     display: grid;
     gap: 5px;
-    flex: 1;
 }
 
 .board {
@@ -111,7 +110,7 @@ body {
 .select-opponent {
     background-color: var(--strawberry);
     padding: 20px 10px;
-    width: 80%;
+    width: 60%;
     height: 30%;
     display: flex;
     flex-direction: column;
@@ -162,17 +161,17 @@ button:hover {
 }
 
 .board-text-container {
-    width: 40%;
+    width: 30%;
     margin: auto;
 }
 
-.board-text-container > div:first-child {
+.place-ships-text-container {
     display: flex;
     color: white;
     align-items: end;
 }
 
-.board-text-container > div:first-child,
+.place-ships-text-container,
 .rotate-btn {
     margin: 10px 0;
 }
@@ -206,15 +205,31 @@ button:hover {
     }
 }
 
-.board-container {
+.all-boards-container {
     display: flex;
-    width: 80%;
+    width: 70%;
     gap: 20px;
     margin-top: 40px;
 }
 
-.all-boards {
+.all-boards-container > div {
+    flex: 1;
+}
+
+.board-title-container {
     display: flex;
+    justify-content: center;
+    color: var(--strawberry);
+    font-size: 1.7rem;
+    font-weight: bold;
+    margin-bottom: 35px;
+}
+
+.board-title {
+    background: var(--cream);
+    padding: 8px;
+    border-radius: 10px;
+    outline: 4px solid var(--strawberry);
 }
 
 p {

@@ -108,10 +108,14 @@ export function setActiveUiBoard(domBoard){
     const gameBoards = document.querySelectorAll('.board');
 
     gameBoards.forEach((board) => {        
+        const boardTitle = board.previousSibling.querySelector('.board-title');
+
         if(board === domBoard){
+            boardTitle.textContent = 'OPPONENT TERRITORY';
             board.classList.add('active');
             board.classList.remove('not-active');
         }else{
+            boardTitle.textContent = 'YOUR TERRITORY';
             board.classList.add('not-active');
             board.classList.remove('active');
         } 
@@ -158,22 +162,30 @@ export function toggleOpponentModalDisplay(){
 
 export function createPlaceShipsPage(uiBoard1, uiBoard2){
     const boardTextContainer = document.createElement('div');
+    const boardTitleContainer = document.createElement('div');
+    const boardTitle = document.createElement('p');
     const textContainer = document.createElement('div');
     const placeShipText = document.createElement('p');
     const ellipsis = document.createElement('span');
     const rotateBtn = document.createElement('button');
 
     boardTextContainer.classList.add('board-text-container');
+    boardTitleContainer.classList.add('board-title-container');
+    boardTitle.classList.add('board-title');
+    textContainer.classList.add('place-ships-text-container');
     placeShipText.classList.add('place-ship-text');
     ellipsis.classList.add('ellipsis');
     uiBoard2.classList.add('hide');
     rotateBtn.classList.add('rotate-btn');
 
+    boardTitle.textContent = 'PLAYER 1 TERRITORY';
     placeShipText.textContent = 'PLACE YOUR SHIPS';
     rotateBtn.textContent = 'ROTATE';
 
+    boardTitleContainer.appendChild(boardTitle);
     textContainer.appendChild(placeShipText);
     textContainer.appendChild(ellipsis);
+    boardTextContainer.appendChild(boardTitleContainer);
     boardTextContainer.appendChild(textContainer);
     boardTextContainer.appendChild(uiBoard1);
     boardTextContainer.appendChild(uiBoard2);
@@ -183,6 +195,9 @@ export function createPlaceShipsPage(uiBoard1, uiBoard2){
 
 export function updatePlaceShipsPage(){
     const gameBoards = document.querySelectorAll('.board');
+    const boardTitle = document.querySelector('.board-title');
+
+    boardTitle.textContent = 'PLAYER 2 TERRITORY';
 
     gameBoards.forEach((board) => {
         board.classList.toggle('hide');
@@ -227,18 +242,31 @@ export function toggleDisplayForPassDevice(countDownFunction){
 
 export function createGameUi(){
     const boardTextContainer = document.querySelector('.board-text-container');
-    const boardContainer = document.createElement('div');
+    const allBoardsContainer = document.createElement('div');
     const uiBoards = document.querySelectorAll('.board');
 
-    boardContainer.classList.add('board-container');
+    allBoardsContainer.classList.add('all-boards-container');
 
-    uiBoards.forEach((uiBoard) => {
+    uiBoards.forEach((uiBoard, index) => {
+        const boardContainer = document.createElement('div');
+        const boardTitleContainer = document.createElement('div');
+        const boardTitle = document.createElement('p');
+
+        if(index) boardTitle.textContent = 'OPPONENT TERRITORY';
+        else boardTitle.textContent = 'YOUR TERRITORY';
+        
+        boardTitleContainer.classList.add('board-title-container');
+        boardTitle.classList.add('board-title');
         uiBoard.classList.remove('hide');
+
+        boardTitleContainer.appendChild(boardTitle);
+        boardContainer.appendChild(boardTitleContainer);
         boardContainer.appendChild(uiBoard);
+        allBoardsContainer.appendChild(boardContainer);
     });
 
     boardTextContainer.remove();
-    document.body.appendChild(boardContainer);
+    document.body.appendChild(allBoardsContainer);
 }
 
 export function createGameOverModal(winningPlayer){
