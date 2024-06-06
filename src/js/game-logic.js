@@ -168,6 +168,7 @@ function placeShipsOnBoard(uiBoard, board){
             if(!computerOpponent) addAttackEventListeners(uiBoard, board);
 
             if(computerOpponent || (!computerOpponent && uiBoard.classList.contains('board-two'))){
+                toggleDisplayForPassDevice(startCountDown);
                 createGameUi();
                 setActiveUiBoard(activeBoardInfo[0][0]);
             }else{
@@ -195,8 +196,8 @@ function addRotateBtnEventListener(){
 }
 
 function startGame(){
-    const player1 = Player('player1');
-    const player2 = computerOpponent ? Player() : Player('player2');
+    const player1 = Player('player 1');
+    const player2 = computerOpponent ? Player() : Player('player 2');
     const board1 = player1.getBoard();
     const board2 = player2.getBoard();
     const uiBoard1 = generateUiBoard(board1.getBoard(), 'board-one');
