@@ -87,12 +87,6 @@ function addAttackEventListeners(uiBoard, board){
             if(!e.target.classList.contains('hit') && activeBoardInfo[0][0] === uiBoard){
                 const coordinates = getAttackCoordinates(e);
 
-                if(!computerOpponent){
-                    setTimeout(() => {
-                        switchActiveBoard();
-                    }, 500);
-                }
-
                 board.receiveAttack(coordinates);
 
                 if(board.getBoard()[coordinates[0]][coordinates[1]]) updateBoxDisplay(e.target, true);
@@ -102,6 +96,12 @@ function addAttackEventListeners(uiBoard, board){
                     createGameOverModal(inactiveBoardInfo[0][1].getPlayerName());
                     addPlayAgainBtnEventListener();
                 }else{
+                    if(!computerOpponent){
+                        setTimeout(() => {
+                            switchActiveBoard();
+                        }, 650);
+                    }
+
                     getNextMove(uiBoard);
                 }
             }
@@ -167,8 +167,9 @@ function placeShipsOnBoard(uiBoard, board){
 
             if(!computerOpponent) addAttackEventListeners(uiBoard, board);
 
-            if(computerOpponent || (!computerOpponent && uiBoard.classList.contains('board-two'))){
-                toggleDisplayForPassDevice(startCountDown);
+            if(computerOpponent || (!computerOpponent && uiBoard.classList.contains('board-two'))){                
+                if(!computerOpponent) toggleDisplayForPassDevice(startCountDown);
+                mouseOutEvent();
                 createGameUi();
                 setActiveUiBoard(activeBoardInfo[0][0]);
             }else{
