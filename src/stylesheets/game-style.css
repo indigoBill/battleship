@@ -313,7 +313,10 @@ p {
         flex-direction: column;
     }
 
-    .board-text-container {
+    .board-text-container,
+    .all-boards-container,
+    .game-over-content,
+    .pass-device-content {
         width: 90%;
     }
 
@@ -323,7 +326,6 @@ p {
 
     .all-boards-container {
         flex-direction: column;
-        width: 90%;
         padding-bottom: 20px;
         gap: 40px;
     }
@@ -335,7 +337,6 @@ p {
 
     .game-over-content,
     .pass-device-content {
-        width: 90%;
         text-align: center;
     }
 
